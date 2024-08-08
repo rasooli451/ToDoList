@@ -22,8 +22,7 @@ body{
     height: 100vh;
 }
 
-.main{
-}
+
 
 
 
@@ -44,28 +43,17 @@ body{
     font-size: max(15px, 4vw);
     font-weight: 600;
     position: relative;
+    border-top: 3px solid #fff;
+    border-bottom: 3px solid #fff;
 }
 
 
 
-.container .title:before, .container .title:after{
-    content: "";
-    position: absolute;
-    width: 100%;
-    height: 3px;
-    border-radius: 5px;
-    background-color: #fff;
-}
 
-.container .title:before{
-    bottom: 15px;
-    left: 0;
-}
 
-.container .title:after{
-    top : 15px;
-    left: 0;
-}
+
+
+
 
 
 .btncont{
@@ -80,12 +68,13 @@ body{
 }
 
 
-span{
+.container span{
     padding: 20px;
     border-radius: 15px;
+    cursor: pointer;
 }
 
-span:not(.active):hover{
+.container span:not(.active):hover{
     background-color: rgba(40, 40, 116, 0.8);
 }
 
@@ -93,3 +82,199 @@ span:not(.active):hover{
     background-color: #fff;
 
 }
+
+
+
+
+.main{
+    font-family: "generalfont";
+    padding: 1rem;
+}
+
+
+
+.main .maindiv{
+    width: min(700px, 45vw);
+    margin: 0 auto;
+    height: 100%;
+    display: flex;
+    font-size : max(12px, 1.5vw);
+    flex-direction: column;
+    gap: 1rem;
+    text-align: center;
+}
+
+.ntask{
+    font-size: max(25px, 3vw);
+    margin-top: 3rem;
+}
+.main .maindiv .addtaskbtn{
+    font-family: inherit;
+    height: 45px;
+    font-size: inherit;
+    font-weight: 500;
+    border-radius: 15px;
+    border: none;
+    outline: none;
+}
+
+
+
+.main .maindiv .addtaskbtn:hover{
+    background-color: rgb(211, 202, 203);
+}
+
+
+
+.taskcont{
+    height: 100%;
+    padding: 2rem 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+}
+
+
+
+
+
+.task{
+    height: max(120px, 1vh);
+    text-align: left;
+}
+
+
+
+.descdiv{
+    border-top: 2px solid #000;
+    border-bottom: 2px solid #000;
+    padding: 10px;
+    height: 70%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+
+.descdiv button{
+    padding: 10px 20px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    background-color: #807979;
+    border-radius: 10px;
+}
+
+.addtaskform{
+    position : fixed;
+    left: 46%;
+    top: 12%;
+    border-radius: 15px;
+    padding: 20px;
+    width: max(150px, 34vw);
+    height: max(100px, 25vh);
+    font-size: 15px;
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #b3a6a6;
+}
+
+
+.close{
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    top: -55px;
+    right: 10px;
+    cursor: pointer;
+}
+
+
+.close .first, .close .second{
+    position: absolute;
+    width: 100%;
+    height: 3px;
+    background-color: #000;
+}
+
+
+.close .first{
+    left: -1px;
+    top: 20px;
+    transform: rotate(45deg);
+}
+
+.close .second{
+    right: -1px;
+    top: 20px;
+    transform: rotate(-45deg);
+}
+
+
+textarea{
+    resize: none;
+    padding: 13px;
+    font-size: 19px;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+.hidden{
+    display: none;
+}
+
+
+
+.section button{
+    padding: 15px 25px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #807979;
+}
+
+
+.section button:hover{
+    transform: scaleX(1.2);
+}
+
+
+
+.section input, .section select{
+    padding: 5px;
+    font-size: 15px;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+}
+
+
+
+
+.addtaskform :nth-child(7){
+    width: 100%;
+    text-align: center;
+}
+
+
+.addtaskform :nth-child(5){
+    width: 100%;
+}
+
+
+
+
+
+
+
+
+
