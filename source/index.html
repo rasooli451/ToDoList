@@ -9,10 +9,47 @@
     <div class="container">
         <div class="title">MYToDoList</div>
         <div class="btncont">
-        <span class="task active">Tasks</span>
+        <span class="tasks active">Tasks</span>
         <span class="project">Projects</span>
     </div>
     </div>
-    <div class="main"></div>
+    <div class="main">
+        <div class="addtaskform hidden">
+            <div class="close">
+                <span class="first"></span>
+                <span class="second"></span>
+            </div>
+            <div class="section">
+            <label for="title">Title</label>
+            <input type="text" id="title" required>
+            </div>
+            <div class="section">
+            <label for="duedate">Due</label>
+            <input type="date" id="duedate">
+            </div>
+            <div class="section">
+                <label for="priority">Priority</label>
+                <select id="priority">
+                    <option>1</option>
+                    <option>2</option>
+                    <option>3</option>
+                    <option>4</option>
+                </select>
+            </div>
+            <div class="section">
+                <label for="description">Description</label>
+                <textarea id="description" rows="2" cols="10"></textarea>
+                </div>
+            <div class="section">
+                <label for="addtoproject">Add To Project:</label>
+                <select id="addtoproject">
+                    <option>Default</option>
+                </select>
+            </div>
+            <div class="section">
+            <button type="submit" class="submittask">Add</button>
+        </div>
+        </div>
+    </div>
 </body>
 </html>
