@@ -29,6 +29,11 @@ let descriptionarea = document.querySelector("#description");
 let selectedproject = document.querySelector("#addtoproject");
 
 
+
+
+
+
+
 taskspan.addEventListener("click", ()=>{
     if (!taskspan.classList.contains("active")){
         taskspan.classList.add("active");
@@ -45,8 +50,13 @@ projectspan.addEventListener("click", ()=>{
 
 let inputs = document.querySelectorAll(".addtaskform input");
 
+let descriptionparagraph = document.querySelector("#description");
+
 
 Main();
+
+
+
 
 
 
@@ -59,29 +69,77 @@ Main();
 function Main(){
     if (taskspan.classList.contains("active")){
         TaskPage(Maincont);
+        let defaultproject = null;
+        let newtask = null;
         let button = document.querySelector(".addtaskbtn");
         button.addEventListener("click", ()=>{
         taskform.classList.remove("hidden");
         })
        closebtn.addEventListener("click", ()=>{
        taskform.classList.add("hidden");
+       clearinputs();
        })
-
-       submittaskbtn.addEventListener("click", (e)=>{
+    submittaskbtn.addEventListener("click", (e)=>{
         e.preventDefault();
-        let title = inputs[0].value;
-        let date = inputs[1].value;
-        let priority = taskpriority.value;
-        let descript = descriptionarea.value;
-        let project = selectedproject.value;
-        let newproject = new Project(project);
-        let newtask = newproject.addTasks(title, date, descript, priority, false);
-        let stringified = JSON.stringify(newtask);
-        localStorage.setItem(project, stringified);
-        taskform.classList.add("hidden");
-        TaskPage(Maincont);
-        console.log(localStorage);
-       })
+        if (submittaskbtn.innerHTML === "Add"){
+            let title = inputs[0].value;
+            let date = inputs[1].value;
+            let priority = taskpriority.value;
+            let descript = descriptionarea.value;
+            let project = selectedproject.value;
+            if (project != "Default"){
+
+            }
+            if (localStorage.getItem("Projects") === null){
+                defaultproject = new Project("Default");
+                newtask = defaultproject.addTasks(title, date, descript, priority, project);
+                localStorage.setItem("Projects", JSON.stringify([defaultproject]));
+            }
+            else{
+                let list = JSON.parse(localStorage.getItem("Projects"));
+                defaultproject = list[0];            
+                newtask = new Task(title, date, descript, priority, project);
+                defaultproject.tasks.push(newtask);
+                list[0] = defaultproject;
+                localStorage.setItem("Projects", JSON.stringify(list));
+            }
+            let stringified = null;
+            if (localStorage.getItem("Default") === null){
+                let defaultarray = [newtask];
+                stringified = JSON.stringify(defaultarray);
+            }
+            else{
+                let parsed = JSON.parse(localStorage.getItem("Default"));
+                let length = parsed.length;
+                if (length > 0){
+                    for (let i = 0; i < length; i++){
+                        if (parsed[i] instanceof Array){
+                            if (parsed[i][0].due === date){
+                                parsed[i].push(newtask);
+                                break;
+                            }
+                        }
+                        else if(parsed[i].due === date){
+                            let temp = parsed[i];
+                            parsed.splice(i, 1, [temp, newtask]);
+                            break;
+                        }
+                        if (i === length - 1){
+                            parsed.push(newtask);
+                        }
+                        
+                    }}
+                else{
+                    parsed.push(newtask);
+                }
+                stringified = JSON.stringify(parsed);
+            }
+            localStorage.setItem(project, stringified);
+            taskform.classList.add("hidden");
+            document.querySelector(".taskcont").innerHTML = "";
+            TaskPage(Maincont);
+            clearinputs();
+    }})
 
     }
     else{
@@ -92,3 +150,11 @@ function Main(){
 
 
 
+
+function clearinputs(){
+    if (submittaskbtn.innerHTML != "Add")
+        submittaskbtn.innerHTML = "Add";
+    inputs[0].value = "";
+    inputs[1].value = "";
+    descriptionparagraph.value = "";
+}
