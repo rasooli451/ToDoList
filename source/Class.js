@@ -9,8 +9,8 @@ class Project{
     constructor(title){
         this.title = title;
     }
-    addTasks(title, due, description, priority, done){
-        let temp = new Task(title, due, description, priority, false);
+    addTasks(title, due, description, priority, projectname){
+        let temp = new Task(title, due, description, priority, projectname);
         this.tasks.push(temp);
         return temp;
     }
@@ -29,12 +29,12 @@ class Project{
 
 
 class Task{
-    constructor(title, due, description, priority, done){
+    constructor(title, due, description, priority, projectname){
         this.title = title;
         this.due = due;
         this.description = description;
         this.priority = priority;
-        this.done = false;
+        this.projectname = projectname;
     }
 }
 
