@@ -1,12 +1,15 @@
 
 
-
+export default ProjectPage;
 
 
 
 function ProjectPage(Parent){
-    if (localStorage.length === 0){
-        let maindiv = document.querySelector(".main .maindiv");
-        document.querySelector(".addtaskbtn").innerHTML = "Add Project";
+    document.querySelector(".addtaskbtn").innerHTML = "Add Project";
+    if (localStorage.length === 0 || JSON.parse(localStorage.getItem("Default")).length === 0){
+        document.querySelector(".ntask").innerHTML = "No Projects To Display";
+    }
+    else{
+        
     }
 }
