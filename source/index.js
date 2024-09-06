@@ -5,6 +5,8 @@ import "./style.css";
 
 import TaskPage from "./task.js";
 
+import ProjectPage from "./project.js";
+
 
 import {Task, Project} from "./Class.js";
 
@@ -39,12 +41,14 @@ taskspan.addEventListener("click", ()=>{
         taskspan.classList.add("active");
         projectspan.classList.remove("active");
     }
+    Main();
 })
 projectspan.addEventListener("click", ()=>{
     if (!projectspan.classList.contains("active")){
         projectspan.classList.add("active");
         taskspan.classList.remove("active");
     }
+    Main();
 })
 
 
@@ -65,7 +69,6 @@ Main();
 
 
 
-
 function Main(){
     if (taskspan.classList.contains("active")){
         TaskPage(Maincont);
@@ -73,7 +76,11 @@ function Main(){
         let newtask = null;
         let button = document.querySelector(".addtaskbtn");
         button.addEventListener("click", ()=>{
-        taskform.classList.remove("hidden");
+            if (button.innerHTML === "Add Task")
+                 taskform.classList.remove("hidden");
+            else{
+                
+            }
         })
        closebtn.addEventListener("click", ()=>{
        taskform.classList.add("hidden");
@@ -143,6 +150,7 @@ function Main(){
 
     }
     else{
+        ProjectPage(Maincont);
     }
 }
 
