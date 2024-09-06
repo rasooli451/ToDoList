@@ -13,6 +13,7 @@ function TaskPage(Parent){
         initialize(Parent);
     }
     else{
+        document.querySelector(".addtaskbtn").innerHTML = "Add Task";
         fillPage(Parent);    
         }
 }
@@ -28,7 +29,10 @@ function initialize(Parent){
     ntask.classList.add("ntask");
     if (Array.from(Parent.children).length > 1){
         maindiv = document.querySelector(".maindiv");
-        maindiv.insertBefore(ntask, document.querySelector(".taskcont"));
+        document.querySelector(".addtaskbtn").innerHTML = "Add Task";
+        if (Array.from(maindiv.children).length === 2)
+             maindiv.insertBefore(ntask, document.querySelector(".taskcont"));
+        document.querySelector(".ntask").innerHTML = "No Tasks to display";
     }
     else{
     maindiv = document.createElement("div");
@@ -159,14 +163,8 @@ function removetask(Taskdiv, task, index, indexArray, isArray){
     localStorage.setItem("Default", JSON.stringify(tasks));
     document.querySelector(".taskcont").innerHTML = "";
     TaskPage(document.querySelector(".main"));
-    for (let i = 0; i < project.length; i++){
-        let subproject = project[i];
-        for (let j = 0; j < subproject.tasks.length; j++){
-            if (JSON.stringify(task) === JSON.stringify(subproject.tasks[j])){
-                subproject.tasks.splice(j, 1);
-                break;
-                }
-    }}
+    let info = findTaskIndex(task, task.projectname);
+    project[info[0]].tasks.splice(info[1], 1);
     localStorage.setItem("Projects", JSON.stringify(project));
 }
 
@@ -183,6 +181,7 @@ function EditTask(task, index, indexArray, isArray){
     form.classList.remove("hidden");
     fillup(task, inputs, descriptionpar, project, priority);
     const controller = new AbortController();
+    let taskindexinproject = findTaskIndex(task, task.projectname);
     button.addEventListener("click", ()=>{
         if (button.innerHTML === "Edit"){
             button.innerHTML = "Add";
@@ -249,6 +248,9 @@ function EditTask(task, index, indexArray, isArray){
                         let temp = tasks[indexArray][0];
                         tasks.splice(indexArray, 1, temp);
                     }
+                    else if(task[indexArray].length === 0){
+                        tasks.splice(indexArray, 1);
+                    }
                 }
                 else{
                     tasks.splice(index, 1);
@@ -260,10 +262,12 @@ function EditTask(task, index, indexArray, isArray){
             inputs[0].value = "";
             inputs[1].value = "";
             descriptionpar.value = "";
+            applychangestoproject(taskindexinproject, task);
             controller.abort();
     }},{
         signal: controller.signal
     });
+    
 }
 
 
@@ -280,7 +284,25 @@ function fillup(task, inputs, descriptionpar, project, priority){
 
 
 
+function findTaskIndex(task, projectname){
+    let projects = JSON.parse(localStorage.getItem("Projects"));
+    let info = [];
+    for (let i = 0; i < projects.length; i++){
+        if (projects[i].title === projectname){
+            info.push(i);
+            for (let j = 0; j < projects[i].tasks.length; j++){
+                if (JSON.stringify(task) === JSON.stringify(projects[i].tasks[j])){
+                    info.push(j);
+                    break;
+                    }
+    }}}
+    return info;
+}
 
 
 
-
+function applychangestoproject(Arrayindex, editedtask){
+    let projects = JSON.parse(localStorage.getItem("Projects"));
+    projects[Arrayindex[0]].tasks.splice(Arrayindex[1], 1, editedtask);
+    localStorage.setItem("Projects", JSON.stringify(projects));
+}
