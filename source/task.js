@@ -13,7 +13,6 @@ function TaskPage(Parent){
         initialize(Parent);
     }
     else{
-        document.querySelector(".addtaskbtn").innerHTML = "Add Task";
         fillPage(Parent);    
         }
 }
@@ -27,7 +26,7 @@ function initialize(Parent){
     let ntask = document.createElement("p");
     ntask.innerHTML = "No Tasks to display";
     ntask.classList.add("ntask");
-    if (Array.from(Parent.children).length > 1){
+    if (Array.from(Parent.children).length > 2){
         maindiv = document.querySelector(".maindiv");
         document.querySelector(".addtaskbtn").innerHTML = "Add Task";
         if (Array.from(maindiv.children).length === 2)
@@ -55,10 +54,11 @@ function initialize(Parent){
 
 
 function fillPage(Parent){
-    if (Parent.children.length === 1){
+    if (Parent.children.length === 2){
         initialize(Parent);
     }
-    let child = Array.from(Parent.children)[1];
+    document.querySelector(".addtaskbtn").innerHTML = "Add Task";
+    let child = Array.from(Parent.children)[2];
     let container = Array.from(child.children);
     for (let i = 0; i < container.length; i++){
         if (container[i].classList.contains("ntask")){
