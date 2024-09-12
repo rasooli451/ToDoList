@@ -31,6 +31,8 @@ let descriptionarea = document.querySelector("#description");
 let selectedproject = document.querySelector("#addtoproject");
 
 
+let projectform = document.querySelector(".addprojectform");
+
 
 
 
@@ -41,6 +43,7 @@ taskspan.addEventListener("click", ()=>{
         taskspan.classList.add("active");
         projectspan.classList.remove("active");
     }
+    document.querySelector(".taskcont").innerHTML = "";
     Main();
 })
 projectspan.addEventListener("click", ()=>{
@@ -48,6 +51,7 @@ projectspan.addEventListener("click", ()=>{
         projectspan.classList.add("active");
         taskspan.classList.remove("active");
     }
+    document.querySelector(".taskcont").innerHTML = "";
     Main();
 })
 
@@ -79,7 +83,7 @@ function Main(){
             if (button.innerHTML === "Add Task")
                  taskform.classList.remove("hidden");
             else{
-                
+                projectform.classList.remove("hidden");
             }
         })
        closebtn.addEventListener("click", ()=>{
