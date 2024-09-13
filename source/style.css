@@ -202,20 +202,53 @@ body{
     font-size: 0.5em;
 }
 
-.addtaskform{
+.addtaskform, .addprojectform{
     position : fixed;
-    left: 46%;
     top: 12%;
     border-radius: 15px;
     padding: 20px;
-    width: max(150px, 34vw);
-    height: max(100px, 25vh);
     font-size: 15px;
     display: flex;
-    justify-content: space-between;
     flex-wrap: wrap;
     gap: 10px;
     background-color: #b3a6a6;
+}
+
+.addtaskform{
+    width: max(150px, 34vw);
+    height: max(100px, 25vh);
+    justify-content: space-between;
+    left: 46%;
+}
+
+.addprojectform{
+    width: max(90px, 15vw);
+    height: max(90px, 14vh);
+    justify-content: center;
+    left: 56%;
+}
+
+.addprojectform input{
+    padding: 10px;
+    font-size: 15px;
+    border: none;
+    outline: none;
+    border-radius: 10px;
+}
+
+
+
+
+.addprojectform button{
+    display: block;
+    padding: 10px 20px;
+    font-weight: bold;
+    border-radius: 10px;
+    border: none;
+    outline: none;
+    cursor: pointer;
+    transition: all 0.3s;
+    background-color: #807979;
 }
 
 
