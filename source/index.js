@@ -20,7 +20,7 @@ let taskspan = document.querySelector(".tasks");
 let projectspan = document.querySelector(".project");
 
 
-let closebtn = document.querySelector(".close");
+let closebtn = document.querySelectorAll(".close");
 
 let submittaskbtn = document.querySelector(".submittask");
 
@@ -61,6 +61,8 @@ let inputs = document.querySelectorAll(".addtaskform input");
 let descriptionparagraph = document.querySelector("#description");
 
 
+
+
 Main();
 
 
@@ -86,9 +88,12 @@ function Main(){
                 projectform.classList.remove("hidden");
             }
         })
-       closebtn.addEventListener("click", ()=>{
+       closebtn[0].addEventListener("click", ()=>{
        taskform.classList.add("hidden");
        clearinputs();
+       })
+       closebtn[1].addEventListener("click", ()=>{
+        projectform.classList.add("hidden");
        })
     submittaskbtn.addEventListener("click", (e)=>{
         e.preventDefault();
