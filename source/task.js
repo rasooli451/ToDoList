@@ -1,12 +1,11 @@
 
 
 
-export default TaskPage;
+export {TaskPage, filldescription, EditTask, removetask, fillup, findTaskIndex, applychangestoproject, updateform};
 
+import ProjectPage from "./project";
 
-
-
-
+import { addtasktoproject, updateform, checkinput} from "./index";
 
 function TaskPage(Parent){
     if (localStorage.getItem("Default") === null || JSON.parse(localStorage.getItem("Default")).length === 0){
@@ -46,7 +45,6 @@ function initialize(Parent){
     maindiv.appendChild(ntask);
     maindiv.appendChild(taskCont);
     }
-    
 }
 
 
@@ -59,12 +57,9 @@ function fillPage(Parent){
     }
     document.querySelector(".addtaskbtn").innerHTML = "Add Task";
     let child = Array.from(Parent.children)[2];
-    let container = Array.from(child.children);
-    for (let i = 0; i < container.length; i++){
-        if (container[i].classList.contains("ntask")){
-            child.removeChild(container[i]);
-            break;
-        }
+    let grandchild = Array.from(child.children);
+    if (grandchild[1].classList.contains("ntask")){
+        child.removeChild(grandchild[1]);
     }
     let taskcont = document.querySelector(".taskcont");
 
@@ -80,7 +75,7 @@ function fillPage(Parent){
                 due.innerHTML = task[0].due;
                 taskdiv.appendChild(due);
                 for (let j = 0; j < task.length; j++){
-                    filldescription(taskdiv, task[j], j, i, true);
+                    filldescription(taskdiv, task[j], j, i, true, true, 0, 0);
                 }
             }   
             else{
@@ -90,7 +85,7 @@ function fillPage(Parent){
                 due.classList.add("duedate");
                 due.innerHTML = task.due;
                 taskdiv.appendChild(due);
-                filldescription(taskdiv, task, i, 0, false);
+                filldescription(taskdiv, task, i, 0, false, true, 0, 0);
             }
             taskcont.appendChild(taskdiv);
             } 
@@ -99,13 +94,13 @@ function fillPage(Parent){
 
 
 
-function filldescription(Taskdiv, task, index, indexArray, isArray){
+function filldescription(Taskdiv, task, index, indexArray, isArray, calledfromtaskpage, projectindex, taskindex){
     let descriptiondiv = document.createElement("div");
     Taskdiv.appendChild(descriptiondiv);
     let checkbox = document.createElement("input");
     checkbox.type = "checkbox";
     checkbox.addEventListener("click", ()=>{
-        removetask(Taskdiv, task, index, indexArray, isArray);
+        removetask(task, index, indexArray, isArray, calledfromtaskpage, projectindex, taskindex);
     })
     descriptiondiv.appendChild(checkbox);
     descriptiondiv.classList.add("descdiv");
@@ -124,15 +119,29 @@ function filldescription(Taskdiv, task, index, indexArray, isArray){
     tempdiv.classList.add("tempdiv");
     tempdiv.append(descP);
     descP.innerHTML = "Description : " + task.description;
-    let projectname = document.createElement("p");
-    projectname.innerHTML = "Project : " + task.projectname;
-    tempdiv.appendChild(projectname);
+    if (calledfromtaskpage){
+        let projectname = document.createElement("p");
+        projectname.innerHTML = "Project : " + task.projectname;
+        tempdiv.appendChild(projectname);
+    }
+    else{
+        let duedate = document.createElement("p");
+        duedate.innerHTML = "Due : " + task.due;
+        tempdiv.appendChild(duedate);
+    }
+    
     let editbtn = document.createElement("button");
     editbtn.innerHTML = "Edit";
     editbtn.classList.add("editbtn");
     tempdiv.append(editbtn);
     editbtn.addEventListener("click", ()=>{
-        EditTask(task, index, indexArray, isArray);
+        if (localStorage.getItem("Projects") != null && JSON.parse(localStorage.getItem("Projects")).length > 1){
+            if (Array.from(document.querySelector("#addtoproject").children).length === 1){
+                updateform();
+            }
+         }
+        document.querySelector("#addtoproject").disabled = false;
+        EditTask(task, index, indexArray, isArray, calledfromtaskpage, projectindex, taskindex);
     })
     detailsbtn.addEventListener("click", ()=>{
     if (detailsbtn.classList.contains("hiddenbtn")){
@@ -148,7 +157,7 @@ function filldescription(Taskdiv, task, index, indexArray, isArray){
 }
 
 
-function removetask(Taskdiv, task, index, indexArray, isArray){
+function removetask(task, index, indexArray, isArray, calledfromtaskpage,  projectindex, taskindex){
     let tasks = JSON.parse(localStorage.getItem("Default"));
     let project = JSON.parse(localStorage.getItem("Projects"));
     if (isArray){
@@ -156,20 +165,31 @@ function removetask(Taskdiv, task, index, indexArray, isArray){
         if (tasks[indexArray].length === 0){
             tasks.splice(indexArray, 1);
         }
+        else if(tasks[indexArray].length === 1){
+            let temp = tasks[indexArray][0];
+            tasks.splice(indexArray, 1, temp);
+        }
     }
     else{
         tasks.splice(index, 1);
     }
     localStorage.setItem("Default", JSON.stringify(tasks));
     document.querySelector(".taskcont").innerHTML = "";
-    TaskPage(document.querySelector(".main"));
-    let info = findTaskIndex(task, task.projectname);
-    project[info[0]].tasks.splice(info[1], 1);
+    if (calledfromtaskpage){
+        TaskPage(document.querySelector(".main"));
+        let info = findTaskIndex(task, task.projectname);
+        project[info[0]].tasks.splice(info[1], 1);
+    }
+    else{
+        project[projectindex].tasks.splice(taskindex, 1);
+        localStorage.setItem("Projects", JSON.stringify(project));
+        ProjectPage(document.querySelector(".main"));
+    }
     localStorage.setItem("Projects", JSON.stringify(project));
 }
 
 
-function EditTask(task, index, indexArray, isArray){
+function EditTask(task, index, indexArray, isArray, calledfromtaskpage, projectindex, taskindex){
     let inputs = document.querySelectorAll(".addtaskform input");
     let descriptionpar = document.querySelector("#description");
     let button = document.querySelector(".addtaskform div button");
@@ -182,88 +202,109 @@ function EditTask(task, index, indexArray, isArray){
     fillup(task, inputs, descriptionpar, project, priority);
     const controller = new AbortController();
     let taskindexinproject = findTaskIndex(task, task.projectname);
+    let projectchanged = false;
     button.addEventListener("click", ()=>{
         if (button.innerHTML === "Edit"){
-            button.innerHTML = "Add";
-            form.classList.add("hidden");
             let title = inputs[0].value;
             let date = inputs[1].value;
             let taskpriority = priority.value;
             let descript = descriptionpar.value;
             let selectedproject = project.value;
-            if (selectedproject != task.projectname){
-
-            }
             task.title = title;
             task.priority = taskpriority;
             task.description = descript;
-            task.projectname = selectedproject;
-            if (date === task.due){
-                if (isArray){
-                    tasks[indexArray][index] = task;
+            if (checkinput(title, date, taskpriority, descript)){
+                button.innerHTML = "Add";
+                if (selectedproject != task.projectname){
+                    projectchanged = true;
+                    task.projectname = selectedproject;
+                    addtasktoproject(selectedproject, task);
+                }
+                if (date === task.due){
+                    if (isArray){
+                        tasks[indexArray][index] = task;
+                    }
+                    else{
+                        tasks[index] = task;
+                    }
                 }
                 else{
-                    tasks[index] = task;
-                }
-            }
-            else{
-                let dateexists = false;
-                let newindex = 0;
-                let newisalreadyArray = false;
-                let newisArray = false;
-                task.due = date;
-                for (let i = 0; i < tasks.length; i++){
-                    if (tasks[i] instanceof Array){
-                        if (tasks[i][0].due === date){
-                            dateexists = true;
-                            newisalreadyArray = true;
-                            newindex = i;
-                            break;
+                    let dateexists = false;
+                    let newindex = 0;
+                    let newisalreadyArray = false;
+                    let newisArray = false;
+                    task.due = date;
+                    for (let i = 0; i < tasks.length; i++){
+                        if (tasks[i] instanceof Array){
+                            if (tasks[i][0].due === date){
+                                dateexists = true;
+                                newisalreadyArray = true;
+                                newindex = i;
+                                break;
+                            }
+                        }
+                        else{
+                            if (tasks[i].due === date){
+                                dateexists = true;
+                                newisArray = true;
+                                newindex = i;
+                                break;
+                            }
+                        }
+                    }
+                    if (dateexists){
+                        if (newisalreadyArray){
+                            tasks[newindex].push(task);
+                        }
+                        else if(newisArray){
+                            let  temptask = tasks[newindex];
+                            tasks.splice(newindex, 1, [temptask, task]);
                         }
                     }
                     else{
-                        if (tasks[i].due === date){
-                            dateexists = true;
-                            newisArray = true;
-                            newindex = i;
-                            break;
+                        tasks.push(task);
+                    }
+                    if (isArray){
+                        tasks[indexArray].splice(index, 1);
+                        if (tasks[indexArray].length === 1){
+                            let temp = tasks[indexArray][0];
+                            tasks.splice(indexArray, 1, temp);
+                        }
+                        else if(task[indexArray].length === 0){
+                            tasks.splice(indexArray, 1);
                         }
                     }
-                }
-                if (dateexists){
-                    if (newisalreadyArray){
-                        tasks[newindex].push(task);
-                    }
-                    else if(newisArray){
-                        let  temptask = tasks[newindex];
-                        tasks.splice(newindex, 1, [temptask, task]);
+                    else{
+                        tasks.splice(index, 1);
                     }
                 }
+                localStorage.setItem("Default", JSON.stringify(tasks));
+                document.querySelector(".taskcont").innerHTML = "";
+                if (calledfromtaskpage){
+                     TaskPage(document.querySelector(".main"));
+                     if (projectchanged)
+                         applychangestoproject(taskindexinproject, task, true);
+                    else 
+                         applychangestoproject(taskindexinproject, task, false);
+                    }
                 else{
-                    tasks.push(task);
-                }
-                if (isArray){
-                    tasks[indexArray].splice(index, 1);
-                    if (tasks[indexArray].length === 1){
-                        let temp = tasks[indexArray][0];
-                        tasks.splice(indexArray, 1, temp);
+                    let projects = JSON.parse(localStorage.getItem("Projects"));
+                    if (projectchanged){
+                        projects[projectindex].tasks.splice(taskindex, 1);
                     }
-                    else if(task[indexArray].length === 0){
-                        tasks.splice(indexArray, 1);
+                    else{
+                        projects[projectindex].tasks.splice(taskindex, 1, task);
                     }
+                    localStorage.setItem("Projects", JSON.stringify(projects));
+                    ProjectPage(document.querySelector(".main"));
                 }
-                else{
-                    tasks.splice(index, 1);
-                }
+                form.classList.add("hidden");
+                inputs[0].value = "";
+                inputs[1].value = "";
+                descriptionpar.value = "";
+                controller.abort();
             }
-            localStorage.setItem("Default", JSON.stringify(tasks));
-            document.querySelector(".taskcont").innerHTML = "";
-            TaskPage(document.querySelector(".main"));
-            inputs[0].value = "";
-            inputs[1].value = "";
-            descriptionpar.value = "";
-            applychangestoproject(taskindexinproject, task);
-            controller.abort();
+            
     }},{
         signal: controller.signal
     });
@@ -301,8 +342,14 @@ function findTaskIndex(task, projectname){
 
 
 
-function applychangestoproject(Arrayindex, editedtask){
+function applychangestoproject(Arrayindex, editedtask, projectchanged){
     let projects = JSON.parse(localStorage.getItem("Projects"));
-    projects[Arrayindex[0]].tasks.splice(Arrayindex[1], 1, editedtask);
+    if (projectchanged){
+        projects[Arrayindex[0]].tasks.splice(Arrayindex[1], 1);
+    }
+    else
+        projects[Arrayindex[0]].tasks.splice(Arrayindex[1], 1, editedtask);
     localStorage.setItem("Projects", JSON.stringify(projects));
 }
+
+
