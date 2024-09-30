@@ -151,7 +151,7 @@ body{
     align-items: center;
     flex-wrap: wrap;
 }
-.samedate .descdiv:first-of-type{
+.samedate .descdiv:nth-of-type(1){
     border-top: 2px solid #000;
 }
 
@@ -345,8 +345,50 @@ input[type = "checkbox"]{
 }
 
 
+.infodiv{
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 2px solid #000;
+    padding: 15px;
+}
 
 
+.buttondiv{
+    width: 50%;
+    display: flex;
+    justify-content: space-evenly;
+}
 
+
+.buttondiv button{
+    padding: 10px;
+    border: none;
+    outline: none;
+    border-radius: 15px;
+    font-weight: 600;
+    background-color: #807979;
+    cursor: pointer;
+    transition: all 0.4s;
+}
+
+
+.buttondiv button:hover{
+    border-radius: 0;
+}
+
+
+.taskless{
+    border-bottom: 2px solid #000;
+}
+
+.taskless .infodiv{
+    width: 100%;
+}
+
+.notaskdesc{
+    font-size: max(20px, 1.5vw);
+    text-align: center;
+    padding: 15px;
+}
 
 
