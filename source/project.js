@@ -10,12 +10,7 @@ import { updateform } from "./index.js";
 
 function ProjectPage(Parent){
     document.querySelector(".addtaskbtn").innerHTML = "Add Project";
-    if (localStorage.length === 0){
-        document.querySelector(".ntask").innerHTML = "No Projects To Display";
-    }
-    else{
-        fillpage(Parent);
-    }
+    fillpage(Parent);
 }
 
 
