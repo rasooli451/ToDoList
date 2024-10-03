@@ -147,11 +147,13 @@ function filldescription(Taskdiv, task, index, indexArray, isArray, calledfromta
     if (detailsbtn.classList.contains("hiddenbtn")){
         descriptiondiv.appendChild(tempdiv);
         detailsbtn.classList.remove("hiddenbtn");
+        detailsbtn.innerHTML = "Contract";
     }
     else{
         let toberemoved = Array.from(descriptiondiv.children)[4];
         descriptiondiv.removeChild(toberemoved);
         detailsbtn.classList.add("hiddenbtn");
+        detailsbtn.innerHTML = "Expand";
     }
 })
 }
